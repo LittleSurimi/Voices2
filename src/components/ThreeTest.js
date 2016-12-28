@@ -5,12 +5,34 @@ import lodash from 'lodash';
 window['THREE'] = THREE;
 require('../lib/OrbitControls');
 
-const HEIGHT = 600;
-const WIDTH = 800;
+const HEIGHT = 1100;
+const WIDTH = 1600;
 
+var uint8 = new Uint8Array(1024);
 export default class ThreeTest extends Component {
   constructor() {
     super();
+
+    // define sound
+    const listener = new THREE.AudioListener();
+    //camera.add( listener );
+
+    // create a global audio source
+    const sound = new THREE.Audio(listener);
+    const audioLoader = new THREE.AudioLoader();
+
+    //Load a sound and set it as the Audio object's buffer
+    audioLoader.load( require('!file!../assets/agathe.mp3'), function( buffer ) {
+      sound.setBuffer( buffer );
+      sound.setLoop(false);
+      sound.setVolume(0.5);
+      sound.play();
+    });
+
+    //Create an AudioAnalyser, passing in the sound and desired fftSize
+    var analyser = new THREE.AudioAnalyser( sound, 1024 );
+
+    setInterval(()=>{analyser.analyser.getByteFrequencyData(uint8); console.log(uint8)}, 1000/60);
 
     // define dots
     const materials = lodash.times(5, n => new THREE.PointsMaterial({
@@ -47,7 +69,7 @@ export default class ThreeTest extends Component {
         aspect: WIDTH / HEIGHT, //aspectratio
         near: 1,
         far: 5000,
-        position: new THREE.Vector3(0, 0, 600),
+        position: new THREE.Vector3(0, 0, 1200),
         lookat: new THREE.Vector3(0, 0, 0)
       },
       dots,
