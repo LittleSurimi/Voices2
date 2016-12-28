@@ -26,8 +26,7 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        Hello World - React Playground
-        <div>
+        <div style={{height: 800, width: 600}}>
           {/* Content goes here*/}
           {this.props.children}
         </div>

@@ -29,6 +29,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "lodash": "4.17.3",
     "object-assign": "4.1.0",
     "react": "15.4.1",
     "react-dom": "15.4.1",
@@ -38,7 +39,7 @@
     "react-three": "0.9.6",
     "redux": "3.6.0",
     "redux-thunk": "2.1.0",
-    "three": "0.83.0"
+    "three": "^0.74.0"
   },
   "devDependencies": {
     "autoprefixer": "6.6.0",
