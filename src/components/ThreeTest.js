@@ -51,12 +51,21 @@ const createPointsPosition = (positions) => {
 }
 
 const CreateRingsColor = (colors) => {
-  console.log('colors', colors);
     let ringColorArray = [];
     for (var i = 0; i < colors.length; i++) {
-        ringHue = colors[i];
-        ringSaturation = colors[i];
-        ringLightness = colors[i];
+        ringHue = 360 / colors[i];
+        if (colors[i]>=50){
+          ringSaturation = 100 - colors[i] ;
+          ringLightness = 100 - colors[i] ;
+        }
+        else if (colors[i]=0){
+          ringSaturation = 0 ;
+          ringLightness = 0 ;
+        }
+        else{
+          ringSaturation = 50 + colors[i] ;
+          ringLightness = 50 - colors[i] ;
+        }
 
         ringColorArray.push({
           'ringHue':ringHue,
@@ -64,7 +73,7 @@ const CreateRingsColor = (colors) => {
           'ringLightness':ringLightness
         });
     }
-    console.log(ringColorArray);
+    console.log('colors',ringColorArray.ringHue);
     return ringColorArray;
 }
 
@@ -120,7 +129,7 @@ export default class ThreeTest extends Component {
         let dots = [];
 
         //Load a sound and set it as the Audio object's buffer
-        audioLoader.load(require('!file!../assets/agathe.mp3'), function(buffer) {
+        audioLoader.load(require('!file!../assets/voices.mp3'), function(buffer) {
             sound.setBuffer(buffer);
             sound.setLoop(false);
             sound.setVolume(0.5);
@@ -145,9 +154,10 @@ export default class ThreeTest extends Component {
                 analyser.analyser.getByteFrequencyData(uint8);
                 fftArray = fftArray.concat(...uint8);
 
+                // get amplityde
                 analyser.analyser.getByteTimeDomainData(uint8v2);
-                console.log(uint8v2[0] - 128);
-                ampArray.push(uint8v2[0] - 128);
+                const max = lodash.max(uint8v2)-128;
+                ampArray.push(max);
             }
         }, 1000 / 60);
 
@@ -171,9 +181,8 @@ export default class ThreeTest extends Component {
 
     render() {
             const { width, height, cameraprops, dots } = this.state;
-            console.log(dots);
     return (
-      <Renderer background={0xff60ff} width={width} height={height}>
+      <Renderer background={0x111111} width={width} height={height}>
         <Scene width={width} height={height} camera="maincamera" orbitControls={THREE.OrbitControls}>
           <PerspectiveCamera name="maincamera" {...cameraprops} />
           {
