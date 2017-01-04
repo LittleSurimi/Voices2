@@ -135,7 +135,7 @@ export default class ThreeTest extends Component {
         let dots = [];
 
         //Load a sound and set it as the Audio object's buffer
-        audioLoader.load(require('!file!../assets/voices.mp3'), function(buffer) {
+        audioLoader.load(require('!file!../assets/agathe.mp3'), function(buffer) {
             sound.setBuffer(buffer);
             sound.setLoop(false);
             sound.setVolume(0.5);
