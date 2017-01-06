@@ -5,15 +5,15 @@
 
 // In a file named a.js
 var A = (function(){
-    var PI = 3.14159;
+    var b = 3.14159;
     var e = 3;
 
-    function printA (){
-        console.log('a', a);
+    function printA(){
+        console.log('b', b);
     }
 
     var pub = {
-        e: e
+        e: e,
         printA: printA
     }
     return pub;
@@ -23,7 +23,7 @@ var A = (function(){
 const a = new A();
 a.e // 3
 a.printA() // print 1
-a.a // you can't
+a.b // you can't
 
 // console
 a.e // 1
