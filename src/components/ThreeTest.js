@@ -7,7 +7,7 @@ require('../lib/OrbitControls');
 
 const HEIGHT = window.innerHeight;
 const WIDTH = window.innerWidth;
-var uint8 = new Uint8Array(1024);
+var uint8 = new Uint8Array(1024);  // uint8 returns results From 0 to 255
 var uint8v2 = new Uint8Array(1024);
 let fftArray = [];
 let ampArray = [];
@@ -154,7 +154,7 @@ export default class ThreeTest extends Component {
                 this.renderFrame();
                 console.log('setted');
             } else {
-                analyser.analyser.getByteFrequencyData(uint8);
+                analyser.analyser.getByteFrequencyData(uint8); // uint8 returns results From 0 to 255
                 fftArray = fftArray.concat(...uint8);
 
                 // get amplityde

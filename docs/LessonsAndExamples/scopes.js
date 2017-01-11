@@ -22,3 +22,8 @@ Engine runs Code to ask Scope if a variable called "a" is in the current scope c
 
 /*=====  End of How the engine works  ======*/
 
+
+function foo(a) {
+  console.log(a);
+}
+var bar = new foo(2);
