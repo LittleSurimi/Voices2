@@ -1,14 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import ReactTHREE, { Renderer, Scene, Mesh, Object3D, PerspectiveCamera, PointCloud } from 'react-three';
-import * as THREE from 'three'
+import * as THREE from 'three';
 import lodash from 'lodash';
 window['THREE'] = THREE;
-require('../lib/OrbitControls');
+require('../../lib/OrbitControls');
 
 const HEIGHT = window.innerHeight;
 const WIDTH = window.innerWidth;
-var uint8 = new Uint8Array(1024);  // uint8 returns results From 0 to 255
-var uint8v2 = new Uint8Array(1024);
+const bin = 1024;
+var uint8 = new Uint8Array(bin);  // uint8 returns results From 0 to 255
+var uint8v2 = new Uint8Array(bin);
 let fftArray = [];
 let ampArray = [];
 
@@ -29,7 +30,7 @@ const createPointsPosition = (positions) => {
             pY = Math.cos(b) * (mainRay + positions[pos]);
             pZ = Math.cos(2 * a) * (mainRay + positions[pos]) * Math.sin(b);
 
-            let pointRay = minRay + positions[pos] / 1024;
+            let pointRay = minRay + positions[pos] / bin;
             if (positions[pos] == 0) {
                 pointRay = 0;
             }
@@ -78,7 +79,7 @@ const CreateRingsColor = (colors) => {
           'ringLightness':ringLightness
         });
     }
-    console.log('colors',ringColorArray.ringHue);
+    //console.log('colors',ringColorArray.ringHue);
     return ringColorArray;
 }
 
@@ -97,7 +98,7 @@ const createDots = (pointPositionArray, ringColorArray)=> {
          }));
 
 
-        // create some random points
+        // position points
         const geometries = lodash.times(rings, (n) => {
           const oneGeometry = new THREE.Geometry();
           for(let i = 0; i < rings; i++){ // dots in one ring
@@ -135,7 +136,7 @@ export default class ThreeTest extends Component {
         let dots = [];
 
         //Load a sound and set it as the Audio object's buffer
-        audioLoader.load(require('!file!../assets/agathe.mp3'), function(buffer) {
+        audioLoader.load(require('!file!../../assets/agathe.mp3'), function(buffer) {
             sound.setBuffer(buffer);
             sound.setLoop(false);
             sound.setVolume(0.5);
@@ -150,7 +151,6 @@ export default class ThreeTest extends Component {
             if (!sound.isPlaying && playStarted) {
                 console.log('not playing');
                 clearInterval(clearFlag);
-                console.log('w', ampArray.length);
                 this.renderFrame();
                 console.log('setted');
             } else {
@@ -162,11 +162,12 @@ export default class ThreeTest extends Component {
                 const max = lodash.max(uint8v2)-128;
                 ampArray.push(max);
             }
-        }, 1000 / 60);
+        }, 1000 / 120);
 
         this.state = {
             width: WIDTH,
             height: HEIGHT,
+            background : 0xf2f2f2,
             // camera
             cameraprops: {
                 fov: 75,
@@ -184,24 +185,25 @@ export default class ThreeTest extends Component {
       const len = ampArray.length;
       let count = 0;
       const cancelFlag = setInterval(()=> {
-        console.log(count);
-        if(count >= len){
-          clearInterval(cancelFlag);
-        }
+
         let pointPositionArray = createPointsPosition(fftArray.slice(0, fftArray.length/len * count));
         let ringColorArray = CreateRingsColor(ampArray.slice(0, count))
         let dots = createDots(pointPositionArray,ringColorArray);
         this.setState({dots: dots});
-        count = count + 23;
-      }, 1000 / 12)
+        count = count + 29;
+
+        if(count >= len){
+          clearInterval(cancelFlag);
+        }
+      }, 1000 / 30)
 
     }
 
     render() {
-            const { width, height, cameraprops, dots } = this.state;
+            const { width, height, cameraprops, background, dots } = this.state;
     return (
-      <Renderer width={width} height={height}>
-        <Scene width={width} height={height} camera="maincamera" orbitControls={THREE.OrbitControls}>
+      <Renderer width={width} height={height} background={background} >
+        <Scene width={width} height={height} camera="maincamera" orbitControls={THREE.OrbitControls} >
           <PerspectiveCamera name="maincamera" {...cameraprops} />
           {
             dots.map(({material, geometry})=> ( <PointCloud geometry={geometry} material={material}/> ))
@@ -209,5 +211,5 @@ export default class ThreeTest extends Component {
         </Scene>
       </Renderer>
     );
-      }
-  }
+    }
+}

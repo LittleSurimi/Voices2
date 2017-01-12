@@ -29,27 +29,22 @@ class Human {
         this.activity = game;
     }
 
-    playAGame(require){
-        if(require === true){
-            console.log(`Awesome let's play ${this.name}`);
-        } else {
-            console.log(`Too bad let's play ${this.name} another day`);
-        }
-    }
-
 }
 
 class Game {
-    constructor(isDifficult,requireSomething){
-        if (isDifficult){
-            this.isDifficult = true;
-        }
-        if (requireSomething){
-            this.requireSomething = true;
-        }
+    constructor(name){
+        this.name = name;
     }
-    playThisGame(require){
+    player(){
 
+    }
+    play(requireSomething){
+        this.requireSomething = requireSomething;
+        if(requireSomething){
+            console.log(`Awesome, there is  ${this.requireSomething}, let's play ${this.name}`);
+        } else {
+            console.log(`Too bad let's play ${this.name} another day`);
+        }
     }
 }
 
@@ -58,7 +53,7 @@ class Game {
 const mark = new Human("Mark", "funny guy", null, null);
 const solene = new Human("Solene", "cheeky girl", true, true);
 
-const kite = new Game("", "wind");
+const kite = new Game("Kite");
 
 mark.makeFriend(solene);
 solene.makeFriend(mark);
@@ -66,4 +61,5 @@ solene.makeFriend(mark);
 mark.askOut();
 solene.askOut();
 
-solene.do(kite);
+solene.do(kite.play("wind"));
+
