@@ -3,7 +3,7 @@ import lodash from 'lodash';
 import * as THREE from 'three';
 window['THREE'] = THREE;
 
-import ReactTHREE, { Renderer, Scene, Mesh, Object3D, PerspectiveCamera, PointCloud } from 'react-three';
+import ReactTHREE, { Renderer, Scene, Mesh, Object3D, PerspectiveCamera, PointCloud, Line } from 'react-three';
 
 const HEIGHT = window.innerHeight;
 const WIDTH = window.innerWidth;
@@ -11,9 +11,23 @@ const bytes = 32;
 let frequencyDomain = [];
 let frameFrequency = [];
 
+
+const createShape = (position) =>{
+  const material = new THREE.Color(0x444444);
+  const geometry = position.map((n) => { new THREE.Geometry();
+    geometry.vertices.push(
+      new THREE.Vector3( -100, 0, 0 ),
+      new THREE.Vector3( 0, -height, 0 ),
+      new THREE.Vector3( 100, 0, 0 )
+    )}
+  );
+  return geometry;
+}
+
 export default class AudioTest extends Component {
   constructor(){
     super();
+    this.animate = this.animate.bind(this);
 
     //Create an AudioListener and add it to the camera
     const listener = new THREE.AudioListener();
@@ -22,6 +36,7 @@ export default class AudioTest extends Component {
     const sound = new THREE.Audio(listener);
     const audioLoader = new THREE.AudioLoader();
     let playState = 0; // 0 before playing, 1 playing, 2 has played
+    let line = [];
 
 
     //Load a sound and set it as the Audio object's buffer
@@ -62,21 +77,12 @@ export default class AudioTest extends Component {
         }
     }
 
-    function shape(){
-
-    }
-
-    function animate(){
-      analyseSound();
-      shape();
-    }
-
-    window.requestAnimationFrame(animate);
-
     this.state = {
           width: WIDTH,
           height: HEIGHT,
           background : 0xf2f2f2,
+          material: new THREE.LineBasicMaterial({color: 0xff0000}),
+          geometry: geometry,
           // camera
           cameraprops: {
               fov: 75,
@@ -86,8 +92,16 @@ export default class AudioTest extends Component {
               position: new THREE.Vector3(0, 0, 1200),
               lookat: new THREE.Vector3(0, 0, 0)
           },
+          line
       }
   }
+
+  animate(){
+      analyseSound();
+      createShape(frameFrequency);
+  }
+
+  //windows.requestAnimationFrame(animate);
 
   render() {
     const { width, height, cameraprops, background } = this.state;
@@ -95,6 +109,7 @@ export default class AudioTest extends Component {
       <Renderer width={width} height={height} background={background} >
         <Scene camera="maincamera" >
           <PerspectiveCamera name="maincamera" {...cameraprops} />
+          <Line geometry={geometry} material={material}/>
         </Scene>
       </Renderer>
     );
