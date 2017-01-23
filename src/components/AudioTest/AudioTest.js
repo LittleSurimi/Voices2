@@ -14,20 +14,22 @@ let frameFrequency = [];
 
 const createShape = (position) =>{
   const material = new THREE.Color(0x444444);
-  const geometry = position.map((n) => { new THREE.Geometry();
+  const geometry =  new THREE.Geometry();
+  const height = position;
     geometry.vertices.push(
       new THREE.Vector3( -100, 0, 0 ),
       new THREE.Vector3( 0, -height, 0 ),
       new THREE.Vector3( 100, 0, 0 )
-    )}
-  );
+    );
+
   return geometry;
+  console.log(geometry);
+
 }
 
 export default class AudioTest extends Component {
   constructor(){
     super();
-    this.animate = this.animate.bind(this);
 
     //Create an AudioListener and add it to the camera
     const listener = new THREE.AudioListener();
@@ -36,7 +38,7 @@ export default class AudioTest extends Component {
     const sound = new THREE.Audio(listener);
     const audioLoader = new THREE.AudioLoader();
     let playState = 0; // 0 before playing, 1 playing, 2 has played
-    let line = [];
+    let geometry = [];
 
 
     //Load a sound and set it as the Audio object's buffer
@@ -76,6 +78,8 @@ export default class AudioTest extends Component {
           }
         }
     }
+    window.requestAnimationFrame(analyseSound);
+    createShape(100);
 
     this.state = {
           width: WIDTH,
@@ -91,20 +95,12 @@ export default class AudioTest extends Component {
               far: 5000,
               position: new THREE.Vector3(0, 0, 1200),
               lookat: new THREE.Vector3(0, 0, 0)
-          },
-          line
+          }
       }
   }
 
-  animate(){
-      analyseSound();
-      createShape(frameFrequency);
-  }
-
-  //windows.requestAnimationFrame(animate);
-
   render() {
-    const { width, height, cameraprops, background } = this.state;
+    const { width, height, cameraprops, background, geometry, material } = this.state;
     return (
       <Renderer width={width} height={height} background={background} >
         <Scene camera="maincamera" >
